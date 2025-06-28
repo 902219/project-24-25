@@ -66,7 +66,7 @@ The class has of the following attributes:
 
 The recursive input format for a piece is designed to succinctly represent shapes through a hierarchical structure.
 
-The format begins with an integer specifying the side length of the grid, followed by the recursive structure of the grid.
+The format begins with an integer specifying the side length of the grid, followed by an integer specifying the color (1-255), followed by the recursive structure of the grid.
 In general terms, the grid is expressed as a quadruple which stores the four quadrants in the following order: top-left (TL), top-right (TR), bottom-left (BL), and bottom-right (BR).
 
 Specifically, a quadrant can be one of the following three things:
@@ -80,10 +80,10 @@ Specifically, a quadrant can be one of the following three things:
 For instance, the string
 
 ```
-4 (([]()[]())(()[]()[])([]()()())(()[]()()))
+4 75 (([]()[]())(()[]()[])([]()()())(()[]()()))
 ```
 
-corresponds to the following 4 x 4 grid
+corresponds to the following 4 x 4 grid (with associated color 75)
 
 ```
   0 1 2 3
@@ -96,10 +96,10 @@ corresponds to the following 4 x 4 grid
 and the string
 
 ```
-2 ()
+2 75 ()
 ```
 
-corresponds to the 2 x 2 grid
+corresponds to the 2 x 2 grid (with associated color 75)
 
 ```
   0 1
@@ -119,7 +119,7 @@ Figure 1 illustrates a detailed, 8 x 8, graphical example.
 **Note 2:** The input format can contain an arbitrary number of whitespace characters (` `, `\n`, `\t`, etc.). The parser must ignore those characters as seen during lectures. For example, the following
 
 ```
-  4 	
+  4 	75  
     ( (
  [ ]()[
  ]()) (( )[
@@ -128,7 +128,7 @@ Figure 1 illustrates a detailed, 8 x 8, graphical example.
   )() ) )
 ```
 
-is a valid input format for the piece
+is a valid input format for the piece (with associated color 75)
 
 ```
   0 1 2 3
@@ -162,10 +162,10 @@ Let us now consider the methods of the `piece` class.
 
 ### Piece Operations
 
-  - `bool empty(uint32_t i, uint32_t j, uint32_t s) const`: Checks if a square of side `s` whose top-left corner is at (i,j) is empty. Throws `tetris_exception` if out of bounds.
-  - `bool full(uint32_t i, uint32_t j, uint32_t s) const`: Checks if a square of side `s` whose top-left corner is at (i,j) is full.
-  - `bool empty() const`: Returns `true` if and only if if the boolean matrix of the piece contains only `false` values.
-  - `bool full() const`: Returns `true` if and only if if the boolean matrix of the piece contains only `true` values.
+  - `bool empty(uint32_t i, uint32_t j, uint32_t s) const`: Checks if a square of side `s` whose top-left corner is at (i,j) is empty. Throws `tetris_exception` if out of bounds. A piece is "empty" if all the cells of its grid are set to `false`. You can assume that `s > 0`.
+  - `bool full(uint32_t i, uint32_t j, uint32_t s) const`: Checks if a square of side `s` whose top-left corner is at (i,j) is full. A piece is "full" if all the cells of its grid are set to `true`. You can assume that `s > 0`.
+  - `bool empty() const`: Returns `true` if and only if the boolean matrix of the piece contains only `false` values or if the piece has been default initialized (`s = 0`).
+  - `bool full() const`: Returns `true` if and only if the boolean matrix of the piece contains only `true` values and the side is `s > 0`.
 
   **Note:** The methods `empty(i,j,s)` and `full(i,j,s)` are useful to write the piece is the recursive format to an output stream (see below).
 
@@ -183,7 +183,7 @@ Let us now consider the methods of the `piece` class.
   <img src="figures/rotations.png" width="330">
 </p>
 
-  - `void cut_row(uint32_t i)`: Removes row `i` from the piece, shifting rows above it down.
+  - `void cut_row(uint32_t i)`: Removes row `i` from the piece, shifting rows above it down by **one** row.
 
   For example, if we cut row `i=1` from the following piece, apart from setting cell `(1,j)=false` for all `j=0..m_side-1`, cell (0,2) "shifts" down to take the place of the cell (1,2).
 
@@ -197,9 +197,10 @@ Let us now consider the methods of the `piece` class.
 
 ### Comparison Operators
 
-  - `bool operator==(piece const& rhs) const`: Returns true if the boolean matrices of the pieces are identical.
-  - `bool operator!=(piece const& rhs) const`: Returns true if the boolean matrices of the pieces are not identical.
+  - `bool operator==(piece const& rhs) const`: Returns true if the boolean matrices of the pieces are identical and color is the same.
+  - `bool operator!=(piece const& rhs) const`: Returns true if the boolean matrices of the pieces are not identical or color is not the same.
 
+Note that this takes into account the **rotation** of the pieces.
 For example, the following pieces are to be considered **different** pieces although the second is the rotation of the first.
 
 <p align="center">
@@ -289,7 +290,7 @@ Now, instead, we have four pieces in the field, each with its bottom-left `(x,y)
 
 ### Comparison Operators
 
-  - `bool operator==(tetris const& rhs) const`: Returns true if both Tetris games are identical.
+  - `bool operator==(tetris const& rhs) const`: Returns true if both Tetris games are identical (i.e. if all member variables of the two tetris containers are equal).
   - `bool operator!=(tetris const& rhs) const`: Returns true if the games differ.
 
 ### Game Operations
