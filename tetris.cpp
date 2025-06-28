@@ -138,14 +138,70 @@
     	return m_grid[i][j];
     }
 
-    bool piece::empty(uint32_t i, uint32_t j, uint32_t s) const;
-    bool piece::full(uint32_t i, uint32_t j, uint32_t s) const;
-    bool piece::empty() const;
-    bool piece::full() const;
+    bool piece::empty(uint32_t i, uint32_t j, uint32_t s) const{
+    	if(s > m_side) throw tetris_exception;
+    	for (uint32_t z = 0; z < m_side; ++z) {
+		    for (uint32_t x = 0; x < m_side; ++x) {
+		        if (m_grid[z][x]) return false;
+		    }
+		}
+		return true;   
+    }
 
-    void piece::rotate();
-    void piece::cut_row(uint32_t i);
-    void piece::print_ascii_art(std::ostream& os) const;
+    bool piece::full(uint32_t i, uint32_t j, uint32_t s) const{
+    	if(s > m_side) throw tetris_exception;
+    	for (uint32_t z = 0; z < m_side; ++z) {
+		    for (uint32_t x = 0; x < m_side; ++x) {
+		        if (!m_grid[z][x]) return false;
+		    }
+		}
+		return true; 
+    }
+
+    bool piece::empty() const{
+    	if(s > m_side) throw tetris_exception;
+    	for (uint32_t z = 0; z < m_side; ++z) {
+		    for (uint32_t x = 0; x < m_side; ++x) {
+		        if (m_grid[z][x]) return false;
+		    }
+		}
+		return true; 
+    }
+
+    bool piece::full() const{
+    	if(s > m_side) throw tetris_exception;
+    	for (uint32_t z = 0; z < m_side; ++z) {
+		    for (uint32_t x = 0; x < m_side; ++x) {
+		        if (!m_grid[z][x]) return false;
+		    }
+		}
+		return true; 
+    }
+
+    void piece::rotate(){
+    	piece rhs (this);
+    	for(uint32_t i = 0; i< m_side; ++i){
+    		for(uint32_t j = 0; j < m_side; ++j){
+    			m_grid[j][m_side-i-1] = rhs[i][j];
+    		}
+    	}
+    }
+
+    void piece::cut_row(uint32_t i){
+    	for(uint32_t z = i; z >= 0; --z){
+    		for(uint32_t j = 0; j < m_side; ++j){
+    			if(z==0){
+    				m_grid[z][j] = false;
+    			} else {
+    				m_grid[z][j] = m_grid[z-1][j];
+    			}
+    		}
+    	}
+    }
+
+    void piece::print_ascii_art(std::ostream& os) const{
+    	
+    }
 
 
 
