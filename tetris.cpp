@@ -1,6 +1,10 @@
 #include "tetris.hpp"
 #include <iostream>
 
+
+
+//classe piece
+
 	std::istream& piece::operator>>(std::istream& is, piece& p){
 		
 	}
@@ -212,4 +216,99 @@
 
     int piece§::color() const {
     	return m_color;
+    }
+
+
+
+//Classe tetris
+
+
+    tetris::tetris(){
+    	m_score = m_width = m_height = 0;
+    	m_field = nullptr;	
+    }
+
+
+    tetris::tetris(uint32_t w, uint32_t h, uint32_t s = 0){
+    	if( w = 0 || h = 0) throw tetris_exception;
+    	m_height = h;
+    	m_width = w;
+    	m_score = s;
+    }
+
+
+    tetris::tetris(tetris const& rhs){
+    	m_width = rhs.m_width;
+    	m_height = rhs.m_height;
+    	m_score = rhs.m_score;
+    	node rhs_m_field = rhs.m_field;
+    	while(rhs_m_field){
+    		if(!m_field){
+	    		m_field->tp = new tetris_piece{rhs_m_field->tp->p, rhs_m_field->tp->x, rhs_m_field->tp->y};
+	    		m_field->next = nullptr;
+    		} else {
+    			node tmp = m_field;
+    			while(tmp-<next) tmp = tmp->next;
+    			node nuovo;
+    			nuovo->tp = new tetris_piece{rhs_m_field->tp->p, rhs_m_field->tp->x, rhs_m_field->tp->y};
+    			nuovo->next = nullptr;
+    			tmp->next = nuovo;
+    		}
+    		rhs_m_field = rhs_m_field->next;
+    	}
+    }
+
+
+    tetris::tetris(tetris&& rhs){
+    	m_width = rhs.m_width;
+    	m_height = rhs.m_height;
+    	m_score = rhs.m_score;
+    	rhs.m_height = rhs.m_score = rhs.m_width = 0;
+    	m_field = rhs.m_field;
+    	rhs.m_field = nullptr;
+    }
+
+
+    tetris::~tetris(){
+
+    }
+
+
+    tetris& tetris::operator=(tetris const& rhs){
+
+    }
+
+
+    tetris& tetris::operator=(tetris&& rhs){
+
+    }
+
+
+    bool tetris::operator==(tetris const& rhs) const{
+
+    }
+
+
+    bool tetris::operator!=(tetris const& rhs) const{
+
+    }
+
+
+    void tetris::insert(piece const& p, int x){
+
+    }
+
+
+    void tetris::add(piece const& p, int x, int y){
+
+    }
+
+
+    bool tetris::containment(piece const& p, int x, int y) const{
+
+    }
+
+
+    void tetris::print_ascii_art(std::ostream& os) const{
+
     }
