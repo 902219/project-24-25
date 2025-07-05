@@ -5,13 +5,31 @@
 
 //classe piece
 
-	std::istream& piece::operator>>(std::istream& is, piece& p){
+	std::istream& operator>>(std::istream& is, piece& p){
+		char c;
+		cin.peek()>>c;
+		if(c=="[" || c=="(") open(is, p);
+		else throw tetris_exception;
+	}
+
+	void open(std::istream& is, piece& p){
 		
+	}
+
+	void close(std::istream& is, piece& p){
+
 	}
 
 
 	std::ostream& operator<<(std::ostream& os, piece const& p){
-
+		for(uint32_t x = 0; x < p.m_side; ++x){
+			for(uint32_t y = 0; y < m_side; ++y){
+				if(m_grid[x][y]){
+					std::cout<<"X";
+				} else	std::cout<<"-";
+			}
+			std::cout<<std::endl;
+		}
 	}
 
 
